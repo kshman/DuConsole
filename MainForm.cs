@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Security.Permissions;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -11,7 +12,7 @@ namespace DuConsole
 {
 	public partial class MainForm : Form
 	{
-		private string _title = "DuConsole";
+		private readonly string _title = "DuConsole";
 
 		private string _filename;
 		private string _lastdir;
@@ -31,10 +32,18 @@ namespace DuConsole
 				txtOutput.Font = new Font("Bitstream Vera Sans Mono", 9.0F, FontStyle.Regular, GraphicsUnit.Point);
 			else if (TestSystem.IsFontInstalled("Consolas"))
 				txtOutput.Font = new Font("Consolas", 9.0F, FontStyle.Regular, GraphicsUnit.Point);
+			else if (TestSystem.IsFontInstalled("Tahoma"))
+				txtOutput.Font = new Font("Consolas", 9.0F, FontStyle.Regular, GraphicsUnit.Point);
+			else
+			{
+				// 오우 어떤 글꼴을 써야한단 말인가
+			}
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
+			KeyPreview = true;
+
 			lblAdmin.Text = TestSystem.IsAdministrator ? "RUNAS" : "";
 
 			using (RegKey rk = new RegKey("PuruLive\\DuConsole"))
@@ -68,6 +77,8 @@ namespace DuConsole
 			}
 
 			//
+			PrepareScript();
+
 			if (_cs == null)
 				LogLine(Color.SeaGreen, "Open script first");
 			else
@@ -78,8 +89,6 @@ namespace DuConsole
 				foreach (var l in _cs.Lines)
 					LogLine(Color.Teal, l);
 			}
-
-			PrepareScript();
 		}
 
 		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -104,6 +113,15 @@ namespace DuConsole
 			}
 		}
 
+		private void MainForm_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Escape)
+			{
+				WaitProcess();
+				Close();
+			}
+		}
+
 		private void BtnDoit_Click(object sender, EventArgs e)
 		{
 			RunIt();
@@ -116,18 +134,7 @@ namespace DuConsole
 
 		private void MiClose_Click(object sender, EventArgs e)
 		{
-			if (_cs != null)
-			{
-				WaitProcess();
-
-				_cs.Close();
-				_cs = null;
-
-				PrepareScript();
-
-				txtOutput.Clear();
-				LogWrite(Color.DarkKhaki, "Script closed");
-			}
+			CloseIt();
 		}
 
 		private void MiExit_Click(object sender, EventArgs e)
@@ -188,6 +195,23 @@ namespace DuConsole
 			InvokeLog(text + Environment.NewLine);
 		}
 
+		//
+		private void CloseIt()
+		{
+			if (_cs != null)
+			{
+				WaitProcess();
+
+				_cs.Close();
+				_cs = null;
+
+				PrepareScript();
+
+				txtOutput.Clear();
+				LogWrite(Color.DarkKhaki, "Script closed");
+			}
+		}
+
 		// 진짜 두잇
 		private void RunIt()
 		{
@@ -216,12 +240,7 @@ namespace DuConsole
 			}
 			else
 			{
-				btnDoit.Enabled = false;
-
-				txtOutput.Clear();
-
-				Thread thd = new Thread(RunAsAsync);
-				thd.Start();
+				ThreadIt();
 			}
 		}
 
@@ -242,6 +261,14 @@ namespace DuConsole
 			}
 			else
 			{
+				if (cs.RunAs && !DuLib.System.TestSystem.IsAdministrator)
+				{
+					// RUNAS!!!
+					RunAs(filename);
+					Close();
+					return null;
+				}
+
 				cs.MakeTempContext();
 
 				LogLine(Color.Blue, $"{filename}{Environment.NewLine}");
@@ -272,7 +299,20 @@ namespace DuConsole
 				_lastdir = (new FileInfo(_cs.FileName)).DirectoryName;
 
 				// start 처리 여기서 하면 됨
+				if (_cs.StartOnLoad)
+					ThreadIt();
 			}
+		}
+
+		[PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
+		private void ThreadIt()
+		{
+			btnDoit.Enabled = false;
+
+			txtOutput.Clear();
+
+			Thread thd = new Thread(RunAsAsync);
+			thd.Start();
 		}
 
 		private void RunAsAsync()
@@ -296,16 +336,22 @@ namespace DuConsole
 			}
 
 			_ps = new Process();
+
 			_ps.StartInfo.FileName = runtime;
 			_ps.StartInfo.Arguments = $"{argument} {_cs.TempFileName}";
 			_ps.StartInfo.UseShellExecute = false;
 			_ps.StartInfo.CreateNoWindow = true;
-			_ps.EnableRaisingEvents = true;
 			_ps.StartInfo.RedirectStandardOutput = true;
 			_ps.StartInfo.RedirectStandardError = true;
+
+			if (_cs.RunAs)
+				_ps.StartInfo.Verb = "runas";
+
+			_ps.EnableRaisingEvents = true;
 			_ps.OutputDataReceived += (s, e) => LogLine(e.Data);
 			_ps.ErrorDataReceived += (s, e) => LogLine(Color.Red, e.Data);
 			_ps.Exited += (s, e) => ProcessExited();
+
 			_ps.Start();
 			_ps.BeginOutputReadLine();
 			_ps.BeginErrorReadLine();
@@ -327,6 +373,33 @@ namespace DuConsole
 				btnDoit.Enabled = true;
 			else
 				btnDoit.Invoke(new Action(() => btnDoit.Enabled = true));
+
+			AutoExitIt();
+		}
+
+		private void AutoExitIt()
+		{
+			if (_cs == null || !_cs.AutoExit)
+				return;
+
+			Thread thd = new Thread(() =>
+			{
+				Thread.Sleep(1000);
+				Invoke(new Action(() => Close()));
+			});
+			thd.Start();
+		}
+
+		//
+		public static void RunAs(string filename)
+		{
+			Process ps = new Process();
+			ps.StartInfo.FileName = Application.ExecutablePath;
+			ps.StartInfo.Arguments = filename;
+			ps.StartInfo.WorkingDirectory = Application.StartupPath;
+			ps.StartInfo.UseShellExecute = true;
+			ps.StartInfo.Verb = "runas";
+			ps.Start();
 		}
 	}
 }

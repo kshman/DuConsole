@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,7 +19,7 @@ namespace DuConsole
 			string filename = Args.Length > 0 ? Args[0] : null;
 			ConsoleScript cs = null;
 
-#if DEBUG && true
+#if DEBUG && false
 			// D:\APPL\ksh\zcmd.duconsole
 			filename = @"D:\APPL\ksh\zcmd.duconsole";
 #endif
@@ -30,7 +32,8 @@ namespace DuConsole
 					// 여기서 RUNAS 검사
 					if (cs.RunAs && !DuLib.System.TestSystem.IsAdministrator)
 					{
-						// 여기서 안해도 되나
+						MainForm.RunAs(filename);
+						return;
 					}
 				}
 			}

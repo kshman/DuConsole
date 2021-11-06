@@ -143,6 +143,17 @@ namespace DuConsole
 				Close();
 		}
 
+		private void miRegisterExtension_Click(object sender, EventArgs e)
+		{
+			var r = MessageBox.Show(this, "Register extensions for DuConsole. Continue?", "Please confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+			if (r != DialogResult.Yes)
+				return;
+
+			RegKey.RegisterExtension(".duc", "DuConsole.duc", "DuConsole script", Application.ExecutablePath);
+			RegKey.RegisterExtension(".duconsole", "DuConsole.duconsole", "DuConsole script", Application.ExecutablePath);
+		}
+
 		private void InvokeLog(string text)
 		{
 			Invoke(new Action(() =>

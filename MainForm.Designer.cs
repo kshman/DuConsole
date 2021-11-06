@@ -38,6 +38,8 @@
 			this.miExit = new System.Windows.Forms.ToolStripMenuItem();
 			this.txtOutput = new System.Windows.Forms.RichTextBox();
 			this.lblAdmin = new System.Windows.Forms.Label();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.miRegisterExtension = new System.Windows.Forms.ToolStripMenuItem();
 			this.ctxDoit.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -59,33 +61,35 @@
             this.miRun,
             this.miClose,
             this.toolStripSeparator1,
+            this.miRegisterExtension,
+            this.toolStripSeparator2,
             this.miExit});
 			this.ctxDoit.Name = "ctxDoit";
-			this.ctxDoit.Size = new System.Drawing.Size(116, 82);
+			this.ctxDoit.Size = new System.Drawing.Size(203, 134);
 			// 
 			// miRun
 			// 
 			this.miRun.Name = "miRun";
-			this.miRun.Size = new System.Drawing.Size(115, 24);
+			this.miRun.Size = new System.Drawing.Size(202, 24);
 			this.miRun.Text = "&Run";
 			this.miRun.Click += new System.EventHandler(this.MiRun_Click);
 			// 
 			// miClose
 			// 
 			this.miClose.Name = "miClose";
-			this.miClose.Size = new System.Drawing.Size(115, 24);
+			this.miClose.Size = new System.Drawing.Size(202, 24);
 			this.miClose.Text = "&Close";
 			this.miClose.Click += new System.EventHandler(this.MiClose_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(112, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(199, 6);
 			// 
 			// miExit
 			// 
 			this.miExit.Name = "miExit";
-			this.miExit.Size = new System.Drawing.Size(115, 24);
+			this.miExit.Size = new System.Drawing.Size(202, 24);
 			this.miExit.Text = "E&xit";
 			this.miExit.Click += new System.EventHandler(this.MiExit_Click);
 			// 
@@ -112,6 +116,18 @@
 			this.lblAdmin.TabIndex = 3;
 			this.lblAdmin.Text = "@@@";
 			this.lblAdmin.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(199, 6);
+			// 
+			// miRegisterExtension
+			// 
+			this.miRegisterExtension.Name = "miRegisterExtension";
+			this.miRegisterExtension.Size = new System.Drawing.Size(202, 24);
+			this.miRegisterExtension.Text = "Register extension";
+			this.miRegisterExtension.Click += new System.EventHandler(this.miRegisterExtension_Click);
 			// 
 			// MainForm
 			// 
@@ -146,6 +162,8 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem miExit;
 		private System.Windows.Forms.Label lblAdmin;
+		private System.Windows.Forms.ToolStripMenuItem miRegisterExtension;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 	}
 }
 

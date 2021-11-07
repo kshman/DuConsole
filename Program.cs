@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DuConsole
@@ -30,7 +25,7 @@ namespace DuConsole
 				if (cs != null)
 				{
 					// 여기서 RUNAS 검사
-					if (cs.RunAs && !DuLib.System.TestSystem.IsAdministrator)
+					if (cs.RunAs && !DuLib.Platform.TestPlatform.IsAdministrator)
 					{
 						MainForm.RunAs(filename);
 						return;

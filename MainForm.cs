@@ -1,5 +1,5 @@
-﻿using DuLib.Data;
-using DuLib.System;
+﻿using DuLib;
+using DuLib.Platform;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -10,12 +10,12 @@ using System.Windows.Forms;
 
 namespace DuConsole
 {
-	public partial class MainForm : Form
+	public partial class MainForm : DuLib.WinForms.BadakForm
 	{
 		private readonly string _title = "DuConsole";
 
 		private string _filename;
-		private string _lastdir;
+		private string _last_folder;
 
 		private Process _ps;
 		private ConsoleScript _cs;
@@ -28,12 +28,15 @@ namespace DuConsole
 			_cs = cs;
 
 			//
-			if (TestSystem.IsFontInstalled("Bitstream Vera Sans Mono"))
-				txtOutput.Font = new Font("Bitstream Vera Sans Mono", 9.0F, FontStyle.Regular, GraphicsUnit.Point);
-			else if (TestSystem.IsFontInstalled("Consolas"))
-				txtOutput.Font = new Font("Consolas", 9.0F, FontStyle.Regular, GraphicsUnit.Point);
-			else if (TestSystem.IsFontInstalled("Tahoma"))
-				txtOutput.Font = new Font("Consolas", 9.0F, FontStyle.Regular, GraphicsUnit.Point);
+			var fonts = new[]
+			{
+				"Bitstream Vera Sans Mono",
+				"Consolas",
+				"Tahoma",
+			};
+			var n = TestPlatform.IsFontInstalled(fonts);
+			if (n >= 0)
+				txtOutput.Font = new Font(fonts[n], 9.0F, FontStyle.Regular, GraphicsUnit.Point);
 			else
 			{
 				// 오우 어떤 글꼴을 써야한단 말인가
@@ -44,7 +47,13 @@ namespace DuConsole
 		{
 			KeyPreview = true;
 
-			lblAdmin.Text = TestSystem.IsAdministrator ? "RUNAS" : "";
+			if (!TestPlatform.IsAdministrator)
+				lblAdmin.Visible = false;
+			else
+			{
+				lblAdmin.Text = "RUNAS";
+				lblAdmin.BackColor = Color.Red;
+			}
 
 			using (RegKey rk = new RegKey("PuruLive\\DuConsole"))
 			{
@@ -63,14 +72,13 @@ namespace DuConsole
 						}
 					}
 
-					if (string.IsNullOrEmpty(_lastdir))
+					if (string.IsNullOrEmpty(_last_folder))
 					{
-						value = rk.GetString("LastDir");
+						value = rk.GetDecodingString("LastFolder");
 						if (!string.IsNullOrEmpty(value))
 						{
-							value = Converter.Base64Decoding(value);
 							if (Directory.Exists(value))
-								_lastdir = value;
+								_last_folder = value;
 						}
 					}
 				}
@@ -108,8 +116,8 @@ namespace DuConsole
 			{
 				rk.SetString("Window", $"{Location.X},{Location.Y},{Size.Width},{Size.Height}");
 
-				if (!string.IsNullOrEmpty(_lastdir))
-					rk.SetString("LastDir", Converter.Base64Encoding(_lastdir));
+				if (!string.IsNullOrEmpty(_last_folder))
+					rk.SetEncodingString("LastFolder", _last_folder);
 			}
 		}
 
@@ -235,13 +243,13 @@ namespace DuConsole
 					CheckFileExists = true,
 					CheckPathExists = true,
 					Multiselect = false,
-					InitialDirectory = _lastdir,
+					InitialDirectory = _last_folder,
 				};
 
 				if (dlg.ShowDialog() == DialogResult.OK)
 				{
 					FileInfo fi = new FileInfo(dlg.FileName);
-					_lastdir = fi.Directory.FullName;
+					_last_folder = fi.Directory.FullName;
 
 					txtOutput.Clear();
 
@@ -272,7 +280,7 @@ namespace DuConsole
 			}
 			else
 			{
-				if (cs.RunAs && !DuLib.System.TestSystem.IsAdministrator)
+				if (cs.RunAs && !TestPlatform.IsAdministrator)
 				{
 					// RUNAS!!!
 					RunAs(filename);
@@ -302,12 +310,12 @@ namespace DuConsole
 			}
 			else
 			{
-				Text = $"{_title} - {_cs.Name}";
+				Text = _cs.Name;
 				btnDoit.Text = "Run";
 				miClose.Enabled = true;
 
 				_filename = _cs.FileName;
-				_lastdir = (new FileInfo(_cs.FileName)).DirectoryName;
+				_last_folder = (new FileInfo(_cs.FileName)).DirectoryName;
 
 				// start 처리 여기서 하면 됨
 				if (_cs.StartOnLoad)

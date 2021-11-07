@@ -1,11 +1,8 @@
-﻿using DuLib.Data;
-using DuLib.System;
+﻿using DuLib;
+using DuLib.Data;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DuConsole
 {
@@ -137,7 +134,7 @@ namespace DuConsole
 			if (!string.IsNullOrEmpty(Context))
 			{
 				var ext = ConsoleTypeToExtension(Type);
-				TempFileName = $"{Path.GetTempPath()}\\DuConsole_{TimeSupp.UnixTimeNow}.{ext}";
+				TempFileName = $"{Path.GetTempPath()}\\DuConsole_{TimeDu.UnixTimeNow}.{ext}";
 				File.WriteAllText(TempFileName, Context, ConsoleTypeToEncoding(Type));
 			}
 		}

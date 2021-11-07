@@ -84,13 +84,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="DuLib\DuLib.csproj">
+    <Content Include="purutu.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DuLib\DuLib.csproj">
       <Project>{bc69e82a-f727-4889-8717-72b93362a436}</Project>
       <Name>DuLib</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="purutu.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

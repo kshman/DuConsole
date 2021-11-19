@@ -81,18 +81,19 @@ public partial class ConsoleForm : BadakForm
 		}
 
 		//
-		PrepareScript();
-
-		if (_cs == null)
-			LogLine(Color.SeaGreen, "Open script first");
-		else
+		if (!PrepareScript())
 		{
-			_cs.MakeTempContext();
+			if (_cs == null)
+				LogLine(Color.SeaGreen, "Open script first");
+			else
+			{
+				_cs.MakeTempContext();
 
-			LogLine(Color.Blue, $"{_filename}{Environment.NewLine}");
-			if (_cs.Lines != null)
-				foreach (string l in _cs.Lines)
-					LogLine(Color.Teal, l);
+				LogLine(Color.Blue, $"{_filename}{Environment.NewLine}");
+				if (_cs.Lines != null)
+					foreach (string l in _cs.Lines)
+						LogLine(Color.Teal, l);
+			}
 		}
 	}
 
@@ -295,7 +296,7 @@ public partial class ConsoleForm : BadakForm
 		return cs;
 	}
 
-	private void PrepareScript()
+	private bool PrepareScript()
 	{
 		if (_cs == null)
 		{
@@ -304,6 +305,8 @@ public partial class ConsoleForm : BadakForm
 			miClose.Enabled = false;
 
 			_filename = null;
+
+			return false;
 		}
 		else
 		{
@@ -315,8 +318,13 @@ public partial class ConsoleForm : BadakForm
 			_last_folder = _cs.FileName != null ? new FileInfo(_cs.FileName).DirectoryName : null;
 
 			// start 처리 여기서 하면 됨
-			if (_cs.StartOnLoad)
+			if (!_cs.StartOnLoad)
+				return false;
+			else
+			{
 				ThreadIt();
+				return true;
+			}
 		}
 	}
 

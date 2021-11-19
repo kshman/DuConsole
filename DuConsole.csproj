@@ -6,7 +6,13 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>purutu.ico</ApplicationIcon>
+    <RepositoryUrl>https://github.com/kshman/DuConsole</RepositoryUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="purutu.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DuBscl\DuBscl.csproj" />

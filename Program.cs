@@ -11,12 +11,12 @@ internal static class Program
 	static void Main()
 	{
 		var args = Environment.GetCommandLineArgs();
-		string? filename = args.Length > 0 ? args[0] : null;
+		string? filename = args.Length > 1 ? args[1] : null;
 		ConsoleScript? cs = null;
 
 #if DEBUG && false
 		// D:\APPL\ksh\zcmd.duconsole
-		filename = @"D:\APPL\ksh\zcmd.duconsole";
+		filename = @"D:\APPL\ksh\zps.duconsole";
 #endif
 
 		if (!string.IsNullOrEmpty(filename))

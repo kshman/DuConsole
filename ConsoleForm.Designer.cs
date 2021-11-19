@@ -49,7 +49,7 @@
 			this.BadakTopPanel.Controls.Add(this.lblAdmin);
 			this.BadakTopPanel.Controls.Add(this.btnDoit);
 			this.BadakTopPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-			this.BadakTopPanel.Size = new System.Drawing.Size(714, 72);
+			this.BadakTopPanel.Size = new System.Drawing.Size(714, 90);
 			this.BadakTopPanel.Controls.SetChildIndex(this.BadakMinMaxClosePanel, 0);
 			this.BadakTopPanel.Controls.SetChildIndex(this.btnDoit, 0);
 			this.BadakTopPanel.Controls.SetChildIndex(this.lblAdmin, 0);
@@ -68,7 +68,7 @@
 			this.btnDoit.Margin = new System.Windows.Forms.Padding(2);
 			this.btnDoit.Menu = this.ctxDoit;
 			this.btnDoit.Name = "btnDoit";
-			this.btnDoit.Size = new System.Drawing.Size(123, 22);
+			this.btnDoit.Size = new System.Drawing.Size(123, 28);
 			this.btnDoit.TabIndex = 0;
 			this.btnDoit.Text = "Do IT";
 			this.btnDoit.UseVisualStyleBackColor = false;
@@ -76,14 +76,14 @@
 			// 
 			// ctxDoit
 			// 
-			this.ctxDoit.Font = new System.Drawing.Font("맑은 고딕", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+			this.ctxDoit.Font = new System.Drawing.Font("맑은 고딕", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 			this.ctxDoit.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.miRun,
-			this.miClose,
-			this.toolStripSeparator1,
-			this.miRegisterExtension,
-			this.toolStripSeparator2,
-			this.miExit});
+            this.miRun,
+            this.miClose,
+            this.toolStripSeparator1,
+            this.miRegisterExtension,
+            this.toolStripSeparator2,
+            this.miExit});
 			this.ctxDoit.Name = "ctxDoit";
 			this.ctxDoit.Size = new System.Drawing.Size(203, 112);
 			// 
@@ -131,15 +131,15 @@
 			// 
 			// txtOutput
 			// 
-			this.txtOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-			| System.Windows.Forms.AnchorStyles.Left)
-			| System.Windows.Forms.AnchorStyles.Right)));
+			this.txtOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtOutput.BackColor = System.Drawing.Color.FloralWhite;
-			this.txtOutput.Location = new System.Drawing.Point(11, 76);
+			this.txtOutput.Location = new System.Drawing.Point(11, 95);
 			this.txtOutput.Margin = new System.Windows.Forms.Padding(2);
 			this.txtOutput.Name = "txtOutput";
 			this.txtOutput.ReadOnly = true;
-			this.txtOutput.Size = new System.Drawing.Size(692, 492);
+			this.txtOutput.Size = new System.Drawing.Size(692, 614);
 			this.txtOutput.TabIndex = 1;
 			this.txtOutput.Text = "";
 			// 
@@ -148,22 +148,24 @@
 			this.lblAdmin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.lblAdmin.AutoSize = true;
 			this.lblAdmin.ForeColor = System.Drawing.Color.White;
-			this.lblAdmin.Location = new System.Drawing.Point(669, 57);
+			this.lblAdmin.Location = new System.Drawing.Point(669, 71);
 			this.lblAdmin.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.lblAdmin.Name = "lblAdmin";
-			this.lblAdmin.Size = new System.Drawing.Size(41, 12);
+			this.lblAdmin.Size = new System.Drawing.Size(43, 15);
 			this.lblAdmin.TabIndex = 3;
 			this.lblAdmin.Text = "@@@";
 			this.lblAdmin.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// MainForm
+			// ConsoleForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(714, 579);
+			this.ClientSize = new System.Drawing.Size(714, 724);
 			this.Controls.Add(this.txtOutput);
-			this.Margin = new System.Windows.Forms.Padding(3);
-			this.Name = "MainForm";
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.MinimumSize = new System.Drawing.Size(400, 390);
+			this.Name = "ConsoleForm";
 			this.Text = "DuConsole";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConsoleForm_FormClosing);
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ConsoleForm_FormClosed);

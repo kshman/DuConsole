@@ -1,39 +1,43 @@
-global using System.Text;
+using System;
+using System.Windows.Forms;
 
-namespace DuConsole;
-
-internal static class Program
+namespace DuConsole
 {
-	/// <summary>
-	///  The main entry point for the application.
-	/// </summary>
-	[STAThread]
-	static void Main()
+
+	internal static class Program
 	{
-		var args = Environment.GetCommandLineArgs();
-		string? filename = args.Length > 1 ? args[1] : null;
-		ConsoleScript? cs = null;
+		/// <summary>
+		///  The main entry point for the application.
+		/// </summary>
+		[STAThread]
+		static void Main()
+		{
+			var args = Environment.GetCommandLineArgs();
+			string filename = args.Length > 1 ? args[1] : null;
+			ConsoleScript cs = null;
 
 #if DEBUG && false
 		// D:\APPL\ksh\zcmd.duconsole
 		filename = @"D:\APPL\ksh\zps.duconsole";
 #endif
 
-		if (!string.IsNullOrEmpty(filename))
-		{
-			cs = ConsoleScript.FromFile(filename);
-			if (cs != null)
+			if (!string.IsNullOrEmpty(filename))
 			{
-				// 여기서 RUNAS 검사
-				if (cs.RunAs && !Du.Platform.TestPlatform.IsAdministrator)
+				cs = ConsoleScript.FromFile(filename);
+				if (cs != null)
 				{
-					ConsoleForm.RunAs(filename);
-					return;
+					// 여기서 RUNAS 검사
+					if (cs.RunAs && !Du.Platform.TestPlatform.IsAdministrator)
+					{
+						ConsoleForm.RunAs(filename);
+						return;
+					}
 				}
 			}
-		}
 
-		ApplicationConfiguration.Initialize();
-		Application.Run(new ConsoleForm(cs));
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+			Application.Run(new ConsoleForm(cs));
+		}
 	}
 }

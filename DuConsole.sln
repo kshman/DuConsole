@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.0.31825.309
+VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuConsole", "DuConsole.csproj", "{A65D3A3A-543F-4948-87B9-17B46DEEA58A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuLib", "..\DuLib\DuLib.csproj", "{BC69E82A-F727-4889-8717-72B93362A436}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuConsole", "DuConsole.csproj", "{7EDA7CB3-B7C9-403F-8F08-F4F8061FB496}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,19 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A65D3A3A-543F-4948-87B9-17B46DEEA58A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A65D3A3A-543F-4948-87B9-17B46DEEA58A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A65D3A3A-543F-4948-87B9-17B46DEEA58A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A65D3A3A-543F-4948-87B9-17B46DEEA58A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC69E82A-F727-4889-8717-72B93362A436}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC69E82A-F727-4889-8717-72B93362A436}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC69E82A-F727-4889-8717-72B93362A436}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC69E82A-F727-4889-8717-72B93362A436}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EDA7CB3-B7C9-403F-8F08-F4F8061FB496}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EDA7CB3-B7C9-403F-8F08-F4F8061FB496}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EDA7CB3-B7C9-403F-8F08-F4F8061FB496}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EDA7CB3-B7C9-403F-8F08-F4F8061FB496}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {9098E97B-26F7-4BF3-96CF-7C474DE4DE41}
+		SolutionGuid = {B7AA567A-C29F-4174-9B31-DA74F3E6458A}
 	EndGlobalSection
 EndGlobal

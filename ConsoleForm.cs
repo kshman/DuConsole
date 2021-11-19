@@ -322,6 +322,7 @@ public partial class ConsoleForm : BadakForm
 				return false;
 			else
 			{
+				_cs.MakeTempContext();
 				ThreadIt();
 				return true;
 			}

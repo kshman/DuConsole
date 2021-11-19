@@ -139,7 +139,7 @@ public class ConsoleScript : IDisposable
 
 	public void MakeTempContext()
 	{
-		if (!string.IsNullOrEmpty(Context))
+		if (!string.IsNullOrEmpty(Context) && string.IsNullOrEmpty(TempFileName))
 		{
 			var ext = ConsoleTypeToExtension(Type);
 			TempFileName = $"{Path.GetTempPath()}\\DuConsole_{TimeDu.UnixTimeNow}.{ext}";

@@ -162,7 +162,10 @@ namespace DuConsole
 		protected override void WndProc(ref Message m)
 		{
 			if (!_bfw.WndProc(ref m))
+			{
+				ControlDu.MagneticDockForm(ref m, this, 15);
 				base.WndProc(ref m);
+			}
 		}
 
 		public override string Text

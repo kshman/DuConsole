@@ -7,14 +7,14 @@ namespace DuConsole;
 
 public partial class ConsoleForm : Form
 {
-	private readonly string _title = "DuConsole";
+	private const string _title = "DuConsole";
 
 	private string? _filename;
 	private string? _last_folder;
 
 	private Process? _ps;
 	private ConsoleScript? _cs;
-	
+
 	private readonly BadakFormWorker _bfw;
 
 	public ConsoleForm(ConsoleScript? cs)
@@ -32,16 +32,16 @@ public partial class ConsoleForm : Form
 		//
 		var fonts = new[]
 		{
-				"Bitstream Vera Sans Mono",
-				"Consolas",
-				"Tahoma",
-			};
+			"Bitstream Vera Sans Mono",
+			"Consolas",
+			"Tahoma",
+		};
 		var n = TestFont.IsInstalled(fonts);
 		if (n >= 0)
 			txtOutput.Font = new Font(fonts[n], 9.0F, FontStyle.Regular, GraphicsUnit.Point);
 		else
 		{
-			// ¿À¿ì ¾î¶² ±Û²ÃÀ» ½á¾ßÇÑ´Ü ¸»ÀÎ°¡
+			// ì˜¤ìš° ì–´ë–¤ ê¸€ê¼´ì„ ì¨ì•¼í•œë‹¨ ë§ì¸ê°€
 		}
 	}
 
@@ -89,9 +89,9 @@ public partial class ConsoleForm : Form
 		//
 		if (!PrepareScript())
 		{
-			// ÀÌ°Ô ÂüÀÌ ¾ú´Ù¸é, prepare¿¡¼­ ½ÇÇàÇÑ°ÍÀ» ÀÇ¹ÌÇÔ
+			// ì´ê²Œ ì°¸ì´ ì—ˆë‹¤ë©´, prepareì—ì„œ ì‹¤í–‰í•œê²ƒì„ ì˜ë¯¸í•¨
 			if (_cs == null)
-				LogLine(Color.SeaGreen, "½ºÅ©¸³Æ®ºÎÅÍ ¿­¾î µÎ½ÃÁö?");
+				LogLine(Color.SeaGreen, "ìŠ¤í¬ë¦½íŠ¸ë¶€í„° ì—´ì–´ ë‘ì‹œì§€?");
 			else
 			{
 				_cs.MakeTempContext();
@@ -106,16 +106,12 @@ public partial class ConsoleForm : Form
 
 	private void ConsoleForm_FormClosing(object sender, FormClosingEventArgs e)
 	{
-
 	}
 
 	private void ConsoleForm_FormClosed(object sender, FormClosedEventArgs e)
 	{
-		if (_ps != null)
-			_ps.Kill();
-
-		if (_cs != null)
-			_cs.Close();
+		_ps?.Kill();
+		_cs?.Close();
 
 		using var rk = new RegKey("PuruLive\\DuConsole", true);
 
@@ -136,8 +132,8 @@ public partial class ConsoleForm : Form
 
 	private void SystemButton_CloseOrder(object sender, EventArgs e)
 	{
-		// ½Ã½ºÅÛ ¹öÆ°¿¡¼­ ¾Ë¾Æ¼­ ´Ý¾ÆÁÜ
-		// ¿Ö ÇÔ¼ö ¸¸µé¾ùÁö...
+		// ì‹œìŠ¤í…œ ë²„íŠ¼ì—ì„œ ì•Œì•„ì„œ ë‹«ì•„ì¤Œ
+		// ì™œ í•¨ìˆ˜ ë§Œë“¤ì—‡ì§€...
 	}
 
 	private void TopPanel_MouseDown(object sender, MouseEventArgs e)
@@ -203,7 +199,8 @@ public partial class ConsoleForm : Form
 
 	private void MiRegisterExtension_Click(object sender, EventArgs e)
 	{
-		var r = MessageBox.Show(this, "DuConsole¿ë È®ÀåÀÚ¸¦ µî·ÏÇÒ±õ¼õ?", "¾Ë·ÁÁÖ½Ã¿Í¿ä", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+		var r = MessageBox.Show(this, "DuConsoleìš© í™•ìž¥ìžë¥¼ ë“±ë¡í• ê¹ìˆ‘?", "ì•Œë ¤ì£¼ì‹œì™€ìš”", MessageBoxButtons.YesNo,
+			MessageBoxIcon.Question);
 
 		if (r != DialogResult.Yes)
 			return;
@@ -214,22 +211,21 @@ public partial class ConsoleForm : Form
 
 	private void InvokeLog(string? text)
 	{
-		Invoke(new Action(() =>
-		{
-			txtOutput.AppendText(text);
-		}));
+		if (text != null)
+			Invoke(() => { txtOutput.AppendText(text); });
 	}
 
 	private void InvokeLog(Color color, string? text)
 	{
-		Invoke(new Action(() =>
-		{
-			txtOutput.SelectionColor = color;
-			txtOutput.SelectionStart = txtOutput.TextLength;
-			txtOutput.SelectionLength = 0;
-			txtOutput.AppendText(text);
-			txtOutput.SelectionColor = txtOutput.ForeColor;
-		}));
+		if (text != null)
+			Invoke(() =>
+			{
+				txtOutput.SelectionColor = color;
+				txtOutput.SelectionStart = txtOutput.TextLength;
+				txtOutput.SelectionLength = 0;
+				txtOutput.AppendText(text);
+				txtOutput.SelectionColor = txtOutput.ForeColor;
+			});
 	}
 
 	public void LogWrite(Color color, string? text)
@@ -281,15 +277,15 @@ public partial class ConsoleForm : Form
 		}
 	}
 
-	// ÁøÂ¥ µÎÀÕ
+	// ì§„ì§œ ë‘ìž‡
 	private void RunIt()
 	{
 		if (_cs == null)
 		{
 			var dlg = new OpenFileDialog()
 			{
-				Title = "ÄÜ¼Ö ½ºÅ©¸³Æ®¸¦ °í¸£¼¼¿ä",
-				Filter = "ÄÜ¼Ö ½ºÅ©¸³Æ®|*.duc;*.duconsole;*.cmd;*.ps1|¸ðµç ÆÄÀÏ|*.*",
+				Title = "ì½˜ì†” ìŠ¤í¬ë¦½íŠ¸ë¥¼ ê³ ë¥´ì„¸ìš”",
+				Filter = "ì½˜ì†” ìŠ¤í¬ë¦½íŠ¸|*.duc;*.duconsole;*.cmd;*.ps1|ëª¨ë“  íŒŒì¼|*.*",
 				CheckFileExists = true,
 				CheckPathExists = true,
 				Multiselect = false,
@@ -325,7 +321,7 @@ public partial class ConsoleForm : Form
 
 		if (cs == null)
 		{
-			LogWrite(Color.Red, "½ºÅ©¸³Æ® ÀÐ±â ½ÇÆÐ: ");
+			LogWrite(Color.Red, "ìŠ¤í¬ë¦½íŠ¸ ì½ê¸° ì‹¤íŒ¨: ");
 			LogLine(filename);
 		}
 		else
@@ -354,7 +350,7 @@ public partial class ConsoleForm : Form
 		if (_cs == null)
 		{
 			Text = _title;
-			btnDoit.Text = "¿­±â";
+			btnDoit.Text = "ì—´ê¸°";
 			miClose.Enabled = false;
 
 			_filename = null;
@@ -364,13 +360,13 @@ public partial class ConsoleForm : Form
 		else
 		{
 			Text = _cs.Name;
-			btnDoit.Text = "½ÇÇà";
+			btnDoit.Text = "ì‹¤í–‰";
 			miClose.Enabled = true;
 
 			_filename = _cs.FileName;
-			_last_folder = _cs.FileName != null ? new FileInfo(_cs.FileName).DirectoryName : null;
+			_last_folder = new FileInfo(_cs.FileName).DirectoryName;
 
-			// start Ã³¸® ¿©±â¼­ ÇÏ¸é µÊ
+			// start ì²˜ë¦¬ ì—¬ê¸°ì„œ í•˜ë©´ ë¨
 			if (!_cs.StartOnLoad)
 				return false;
 			else
@@ -402,7 +398,7 @@ public partial class ConsoleForm : Form
 
 		if (_ps != null)
 		{
-			// Çæ·© ½ÇÇàÁß
+			// í—ëž­ ì‹¤í–‰ì¤‘
 			return;
 		}
 
@@ -442,14 +438,16 @@ public partial class ConsoleForm : Form
 			exitcode = 0;
 		else
 		{
+			Thread.Sleep(100);
+
 			exitcode = _ps.ExitCode;
 
 			_ps.Close();
 			_ps = null;
 		}
 
-		// ´ç¿¬ÇÏÁö¸¸ Á¾·á°¡ ¸Þ½ÃÁö º¸´Ù »¡¸® ¿Ã °¡´É¼º 99.999%
-		// TxtOutputAppendText($"{Environment.NewLine}ÇÁ·Î±×·¥ Á¾·á: {exitcode}");
+		// ë‹¹ì—°í•˜ì§€ë§Œ ì¢…ë£Œê°€ ë©”ì‹œì§€ ë³´ë‹¤ ë¹¨ë¦¬ ì˜¬ ê°€ëŠ¥ì„± 99.999%
+		LogWrite(Color.Red, $"{Environment.NewLine}í”„ë¡œê·¸ëž¨ ì¢…ë£Œ: {exitcode}");
 		Debug.WriteLine($"Exit code: {exitcode}");
 
 		//
@@ -463,7 +461,7 @@ public partial class ConsoleForm : Form
 
 	private void AutoExitIt()
 	{
-		if (_cs == null || !_cs.AutoExit)
+		if (_cs is not {AutoExit: true})
 			return;
 
 		var thd = new Thread(() =>
@@ -486,4 +484,3 @@ public partial class ConsoleForm : Form
 		ps.Start();
 	}
 }
-

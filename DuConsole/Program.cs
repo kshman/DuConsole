@@ -1,9 +1,10 @@
+global using Du;
+global using Du.Data;
 global using System;
 global using System.Text;
 global using System.Windows.Forms;
 
 namespace DuConsole;
-
 
 internal static class Program
 {
@@ -14,7 +15,7 @@ internal static class Program
 	static void Main()
 	{
 		var args = Environment.GetCommandLineArgs();
-		string? filename = args.Length > 1 ? args[1] : null;
+		var filename = args.Length > 1 ? args[1] : null;
 		ConsoleScript? cs = null;
 
 #if DEBUG && true
@@ -27,7 +28,7 @@ internal static class Program
 			cs = ConsoleScript.FromFile(filename);
 			if (cs != null)
 			{
-				// ¿©±â¼­ RUNAS °Ë»ç
+				// ì—¬ê¸°ì„œ RUNAS ê²€ì‚¬
 				if (cs.RunAs && !Du.Platform.TestEnv.IsAdministrator)
 				{
 					ConsoleForm.RunAs(filename);
@@ -36,8 +37,7 @@ internal static class Program
 			}
 		}
 
-		Application.EnableVisualStyles();
-		Application.SetCompatibleTextRenderingDefault(false);
+		ApplicationConfiguration.Initialize();
 		Application.Run(new ConsoleForm(cs));
 	}
 }

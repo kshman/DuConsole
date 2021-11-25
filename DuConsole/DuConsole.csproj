@@ -7,6 +7,8 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>purutu.ico</ApplicationIcon>
+    <Company>PuruLive</Company>
+    <Copyright>Copyright © PuruLive 2021</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

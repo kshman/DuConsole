@@ -1,7 +1,4 @@
-﻿using Du;
-using Du.Data;
-
-namespace DuConsole;
+﻿namespace DuConsole;
 
 public class ConsoleScript : IDisposable
 {
@@ -10,12 +7,12 @@ public class ConsoleScript : IDisposable
 
 	public string Name { get; private set; } = string.Empty;
 	public ConsoleType Type { get; private set; } = ConsoleType.Unknown;
-	public bool StartOnLoad { get; private set; } = false;
-	public bool RunAs { get; private set; } = false;
-	public bool AutoExit { get; private set; } = false;
+	public bool StartOnLoad { get; private set; }
+	public bool RunAs { get; private set; }
+	public bool AutoExit { get; private set; }
 
-	public string[]? Lines { get; private set; } = null;
-	public string? Context { get; private set; } = null;
+	public string[]? Lines { get; private set; }
+	public string? Context { get; private set; }
 
 	private ConsoleScript()
 	{
@@ -53,16 +50,19 @@ public class ConsoleScript : IDisposable
 			s.FileName = fi.FullName;
 			s.Type = detect;
 
-			if (detect == ConsoleType.Unknown)
-				return null;
-			else if (detect == ConsoleType.Console)
+			switch (detect)
 			{
-				if (!s.ReadConsoleFromFile())
-					return null;
-			}
-			else if (detect == ConsoleType.Cmd || detect == ConsoleType.PowerShell)
-			{
-				if (!s.ReadFromFile())
+				case ConsoleType.Console:
+					if (!s.ReadConsoleFromFile())
+						return null;
+					break;
+
+				case ConsoleType.Cmd or ConsoleType.PowerShell:
+					if (!s.ReadFromFile())
+						return null;
+					break;
+				
+				default:
 					return null;
 			}
 
@@ -100,7 +100,7 @@ public class ConsoleScript : IDisposable
 
 		var ctx = new StringBuilder();
 		var scp = new StringBuilder();
-		bool isdb = true;
+		var isdb = true;
 
 		foreach (var l in Lines)
 		{
@@ -117,38 +117,38 @@ public class ConsoleScript : IDisposable
 
 		Context = scp.ToString();
 
-		if (ctx.Length > 0)
-		{
-			var db = LineDb.FromContext(ctx.ToString());
+		if (ctx.Length <= 0) 
+			return false;
+		
+		var db = LineDb.FromContext(ctx.ToString());
 
-			Name = db.Get("name") ?? FileName;
-			Type = StringToConsoleType(db.Get("type"));
-			StartOnLoad = Converter.ToBool(db.Get("start"), StartOnLoad);
-			RunAs = Converter.ToBool(db.Get("runas"), RunAs);
-			AutoExit = Converter.ToBool(db.Get("autoexit"), AutoExit);
-		}
+		Name = db.Get("name") ?? FileName;
+		Type = StringToConsoleType(db.Get("type"));
+		StartOnLoad = Converter.ToBool(db.Get("start"), StartOnLoad);
+		RunAs = Converter.ToBool(db.Get("runas"), RunAs);
+		AutoExit = Converter.ToBool(db.Get("autoexit"), AutoExit);
 
 		return true;
 	}
 
 	public void MakeTempContext()
 	{
-		if (!string.IsNullOrEmpty(Context) && string.IsNullOrEmpty(TempFileName))
-		{
-			var ext = ConsoleTypeToExtension(Type);
-			TempFileName = $"{Path.GetTempPath()}\\DuConsole_{UnixTime.Tick}.{ext}";
-			var encoding = ConsoleTypeToEncoding(Type);
-			File.WriteAllText(TempFileName, Context, encoding);
-		}
+		if (string.IsNullOrEmpty(Context) || !string.IsNullOrEmpty(TempFileName)) 
+			return;
+		
+		var ext = ConsoleTypeToExtension(Type);
+		TempFileName = $"{Path.GetTempPath()}\\DuConsole_{UnixTime.Tick}.{ext}";
+		var encoding = ConsoleTypeToEncoding(Type);
+		File.WriteAllText(TempFileName, Context, encoding);
 	}
 
-	public void UnlinkTempContext()
+	private void UnlinkTempContext()
 	{
-		if (!string.IsNullOrEmpty(TempFileName) && File.Exists(TempFileName))
-		{
-			File.Delete(TempFileName);
-			TempFileName = string.Empty;
-		}
+		if (string.IsNullOrEmpty(TempFileName) || !File.Exists(TempFileName)) 
+			return;
+		
+		File.Delete(TempFileName);
+		TempFileName = string.Empty;
 	}
 
 	private static ConsoleType DetectConsoleType(FileInfo fileinfo)
@@ -187,19 +187,24 @@ public class ConsoleScript : IDisposable
 
 	private static Encoding ConsoleTypeToEncoding(ConsoleType type)
 	{
-		if (type == ConsoleType.Cmd)
+		switch (type)
 		{
+			case ConsoleType.Cmd:
 #if false
-			return Encoding.Default;
+				return Encoding.Default;
 #else
-			var enc = CodePagesEncodingProvider.Instance.GetEncoding(System.Globalization.CultureInfo.CurrentCulture.TextInfo.ANSICodePage);
-			return enc ?? Encoding.Default;
+				var enc = CodePagesEncodingProvider.Instance.GetEncoding(System.Globalization.CultureInfo.CurrentCulture.TextInfo.ANSICodePage);
+				return enc ?? Encoding.Default;
 #endif
+			
+			case ConsoleType.PowerShell:
+				return Encoding.UTF8;
+			
+			case ConsoleType.Unknown:
+			case ConsoleType.Console:
+			default:
+				return Encoding.Default;
 		}
-		else if (type == ConsoleType.PowerShell)
-			return Encoding.UTF8;
-		else
-			return Encoding.Default;
 	}
 
 	public static bool ConsoleTypeToRuntime(ConsoleType type, out string? runtime, out string? argument)
@@ -216,6 +221,8 @@ public class ConsoleScript : IDisposable
 				argument = "-File";
 				break;
 
+			case ConsoleType.Unknown:
+			case ConsoleType.Console:
 			default:
 				runtime = null;
 				argument = null;

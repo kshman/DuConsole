@@ -1,4 +1,6 @@
-﻿namespace DuConsole;
+﻿using Du.Globalization;
+
+namespace DuConsole;
 
 public class ConsoleScript : IDisposable
 {
